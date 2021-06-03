@@ -10,22 +10,23 @@ SWMM input files and Python files from a comparative simulation analysis of phos
 * The parameters that could not be obtained from the Toledo site were based on design standards set forth by the Ohio Department of Natural Resources (Mathews 2006). See SWMM files below.
 
 ### Python files
-* TP_Sims_6hr0.5in_0.2mgL.py
-* TP_Sims_6hr0.5in_0.6mgL.py
-* TP_Sims_6hr0.5in_1.0mgL.py
-* TP_Sims_6hr0.5in_1.4mgL.py
-* TP_Sims_6hr0.5in_1.8mgL.py
-* TP_Sims_6hr1in_0.2mgL.py
-* TP_Sims_6hr1in_0.6mgL.py
-* TP_Sims_6hr1in_1.0mgL.py
-* TP_Sims_6hr1in_1.4mgL.py
-* TP_Sims_6hr1in_1.8mgL.py
-* TP_Sims_6hr2in_0.2mgL.py
-* TP_Sims_6hr2in_0.6mgL.py
-* TP_Sims_6hr2in_1.0mgL.py
-* TP_Sims_6hr2in_1.4mgL.py
-* TP_Sims_6hr2in_1.8mgL.py
-* TP_Sims_RealWeather_0.38mgL.py
+* DesignStorm_6hr0.5in_0.2mgL.py
+* DesignStorm_6hr0.5in_0.6mgL.py
+* DesignStorm_6hr0.5in_1.0mgL.py
+* DesignStorm_6hr0.5in_1.4mgL.py
+* DesignStorm_6hr0.5in_1.8mgL.py
+* DesignStorm_6hr1in_0.2mgL.py
+* DesignStorm_6hr1in_0.6mgL.py
+* DesignStorm_6hr1in_1.0mgL.py
+* DesignStorm_6hr1in_1.4mgL.py
+* DesignStorm_6hr1in_1.8mgL.py
+* DesignStorm_6hr2in_0.2mgL.py
+* DesignStorm_6hr2in_0.6mgL.py
+* DesignStorm_6hr2in_1.0mgL.py
+* DesignStorm_6hr2in_1.4mgL.py
+* DesignStorm_6hr2in_1.8mgL.py
+* DesignStorm_RealWeather_0.38mgL.py
+* DesignStorm_RealWeather_0.38mgL_PaperFigure.py
 * heatmap.py
 
 ### SWMM files
@@ -35,7 +36,6 @@ SWMM input files and Python files from a comparative simulation analysis of phos
 * BRC_6hr0.5in_1.4mgL.inp
 * BRC_6hr0.5in_1.8mgL.inp
 * BRC_6hr1in_0.2mgL.inp
-* BRC_6hr1in_0.38mgL.inp
 * BRC_6hr1in_0.6mgL.inp
 * BRC_6hr1in_1.0mgL.inp
 * BRC_6hr1in_1.4mgL.inp
@@ -45,5 +45,5 @@ SWMM input files and Python files from a comparative simulation analysis of phos
 * BRC_6hr2in_1.0mgL.inp
 * BRC_6hr2in_1.4mgL.inp
 * BRC_6hr2in_1.8mgL.inp
-* BRC_RealWeather_0.38mgL.inp
+* BRC_DynamicStorm_0.38mgL.inp
 * Rain_Law_6-11-2014.dat
