@@ -38,7 +38,7 @@ exfil_pp = []       # Exfiltrated PP concentration (mg/L)
 
 
 # Setup toolbox simulation for traditional soils
-with Simulation("./BRC_RealWeather_0.38mgL.inp") as sim:
+with Simulation("./BRC_DynamicStorm_0.38mgL.inp") as sim:
     
     # Get asset information
     soil = Links(sim)["IntoMedia"]
@@ -171,6 +171,11 @@ infil_tp = [a+b for a,b in zip(infil_dp, infil_pp)]
 drain_tp = [a+b for a,b in zip(drained_dp, drained_pp)]
 exfil_tp = [a+b for a,b in zip(exfil_dp, exfil_pp)]
 
+# Calculate TP mass flow rate (mg/s) 
+inflow_mfr_tp = [a*b for a,b in zip(inflow_tp,inflow_m)]
+drain_mfr_tp = [a*b for a,b in zip(drain_tp, drain_m)]
+exfil_mfr_tp = [a*b for a,b in zip(exfil_tp,exfil_m)]
+
 # Calculate DP load (g) each timestep
 conv_mgs_gs = [0.001]*len(inflow)
 timestep = [5]*len(inflow)
@@ -242,7 +247,7 @@ exfil_dpC = []       # Exfiltrated DP concentration (mg/L)
 exfil_ppC = []       # Exfiltrated PP concentration (mg/L)
 
 # Setup toolbox simulation for RTC of BRC with traditional soils
-with Simulation("./BRC_RealWeather_0.38mgL.inp") as sim:
+with Simulation("./BRC_DynamicStorm_0.38mgL.inp") as sim:
     
     # Get asset information
     soil = Links(sim)["IntoMedia"]
@@ -389,6 +394,11 @@ infil_tpC = [a+b for a,b in zip(infil_dpC, infil_ppC)]
 drain_tpC = [a+b for a,b in zip(drained_dpC, drained_ppC)]
 exfil_tpC = [a+b for a,b in zip(exfil_dpC, exfil_ppC)]
 
+# Calculate TP mass flow rate (mg/s) 
+inflow_mfr_tpC = [a*b for a,b in zip(inflow_tpC,inflow_mC)]
+drain_mfr_tpC = [a*b for a,b in zip(drain_tpC, drain_mC)]
+exfil_mfr_tpC = [a*b for a,b in zip(exfil_tpC,exfil_mC)]
+
 # Calculate DP load (g) each timestep
 conv_mgs_gs = [0.001]*len(inflow)
 timestep = [5]*len(inflow)
@@ -465,7 +475,7 @@ exfil_dpA = []       # Exfiltrated DP concentration (mg/L)
 exfil_ppA = []       # Exfiltrated PP concentration (mg/L)
 
 # Setup toolbox simulation for amended soils
-with Simulation("./BRC_RealWeather_0.38mgL.inp") as sim:
+with Simulation("./BRC_DynamicStorm_0.38mgL.inp") as sim:
     
     # Get asset information
     soil = Links(sim)["IntoMedia"]
@@ -591,12 +601,17 @@ conv_ft_m = [0.3048]*len(inflow)
 pond_height_mA = [a*b for a,b in zip(pond_heightA,conv_ft_m)]
 soil_height_mA = [a*b for a,b in zip(soil_heightA,conv_ft_m)]
 
-# Calculate TTP concentration
+# Calculate TP concentration
 inflow_tpA = [a+b for a,b in zip(inflow_dpA, inflow_ppA)]
 runoff_tpA = [a+b for a,b in zip(runoff_dpA, runoff_ppA)]
 infil_tpA = [a+b for a,b in zip(infil_dpA, infil_ppA)]
 drain_tpA = [a+b for a,b in zip(drained_dpA, drained_ppA)]
 exfil_tpA = [a+b for a,b in zip(exfil_dpA, exfil_ppA)]
+
+# Calculate TP mass flow rate (mg/s) 
+inflow_mfr_tpA = [a*b for a,b in zip(inflow_tpA,inflow_mA)]
+drain_mfr_tpA = [a*b for a,b in zip(drain_tpA, drain_mA)]
+exfil_mfr_tpA = [a*b for a,b in zip(exfil_tpA,exfil_mA)]
 
 # Calculate DP load (g) each timestep
 conv_mgs_gs = [0.001]*len(inflow)
@@ -658,110 +673,66 @@ print("CapturedA:", captured_cumloadA[-1])
 #----------------------------------------------------------------------#
 
 # Plot Flow and Concentration Results
-fig, ax = plt.subplots(4, 3)
-ax[0,0].plot(inflow_mC, color='#695580', linewidth=2, label="RTC")
-ax[0,0].plot(inflow_m, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[0,0].plot(inflow_mA, '--', color='#3B4D7A', linewidth=2, label="Amended")
+fig, ax = plt.subplots(3,3, figsize=(8,6), constrained_layout=True)
+ax[0,0].plot(inflow_mC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[0,0].plot(inflow_m, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[0,0].plot(inflow_mA, '--', color='#3B4D7A', linewidth=2, label="passive")
 ax[0,0].set_xticks([])
 ax[0,0].set_ylabel("Inflow (L/s)")
-ax[0,0].legend()
 
-ax[1,0].plot(infil_mC, color='#695580', linewidth=2, label="RTC")
-ax[1,0].plot(infil_m, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[1,0].plot(infil_mA, '--', color='#3B4D7A', linewidth=2, label="Amended")
-ax[1,0].set_xticks([])
-ax[1,0].set_ylabel("Infiltration (L/s)")
-
-ax[2,0].plot(drain_mC, color='#695580', linewidth=2, label="RTC")
-ax[2,0].plot(drain_m, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[2,0].plot(drain_mA, '--', color='#3B4D7A', linewidth=2, label="Amended")
-ax[2,0].set_xticks([])
-ax[2,0].set_ylabel("Drain Flow (L/s)")
-ax[2,0].legend()
-
-ax[3,0].plot(exfil_mC, color='#695580', linewidth=2, label="RTC")
-ax[3,0].plot(exfil_m, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[3,0].plot(exfil_mA, '--', color='#3B4D7A', linewidth=2, label="Amended")
-ax[3,0].set_ylabel("Exfiltration (L/s)")
-ax[3,0].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
-ax[3,0].set_xticklabels(["0","1","2","3","4","5","6","7"])
-ax[3,0].set_xlabel("Time (days)")
-
-ax[0,1].plot(pond_height_mC, color='#695580', linewidth=2, label="RTC")
-ax[0,1].plot(pond_height_m, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[0,1].plot(pond_height_mA, '--', color='#3B4D7A', linewidth=2, label="Amended")
+ax[0,1].plot(drain_mC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[0,1].plot(drain_m, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[0,1].plot(drain_mA, '--', color='#3B4D7A', linewidth=2, label="passive")
 ax[0,1].set_xticks([])
-ax[0,1].set_ylabel("Pond Height (m)")
-ax[0,1].legend()
+ax[0,1].set_ylabel("Drain Flow (L/s)")
 
-ax[1,1].plot(soil_height_mC, color='#695580', linewidth=2, label="RTC")
-ax[1,1].plot(soil_height_m, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[1,1].plot(soil_height_mA, '--', color='#3B4D7A', linewidth=2, label="Amended")
-ax[1,1].set_xticks([])
-ax[1,1].set_ylabel("Soil Height (m)")
-
-ax[2,1].plot(valve_setting, color='#695580', linewidth=2, label="RTC")
-ax[2,1].set_xticks([])
-ax[2,1].set_ylabel("Valve Setting (%)")
-ax[2,1].legend()
-
-ax[3,1].set_xticks([])
-ax[3,1].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
-ax[3,1].set_xticklabels(["0","1","2","3","4","5","6","7"])
-ax[3,1].set_xlabel("Time (days)")
-
-ax[0,2].plot(influent_loadC, color='#695580', linewidth=2, label='RTC')
-ax[0,2].plot(influent_load, '-.', color='#6CC6D1', linewidth=2, label='Standard')
-ax[0,2].plot(influent_loadA, '--', color='#3B4D7A', linewidth=2, label='Amended')
-ax[0,2].set_ylabel("Influent Load (g)")
+ax[0,2].plot(exfil_mC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[0,2].plot(exfil_m, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[0,2].plot(exfil_mA, '--', color='#3B4D7A', linewidth=2, label="passive")
 ax[0,2].set_xticks([])
-ax[0,2].legend()
+ax[0,2].set_ylabel("Exfiltration (L/s)")
 
-ax[1,2].plot(infil_tpC, color='#695580', linewidth=2, label='RTC')
-ax[1,2].plot(infil_tp, '-.', color='#6CC6D1', linewidth=2, label='Standard')
-ax[1,2].plot(infil_tpA, '--', color='#3B4D7A', linewidth=2, label='Amended')
-ax[1,2].set_ylabel("Soil/Drain Conc (mg/L)")
+ax[1,0].plot(inflow_mfr_tpC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[1,0].plot(inflow_mfr_tp, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[1,0].plot(inflow_mfr_tpA, '--', color='#3B4D7A', linewidth=2, label="passive")
+ax[1,0].set_ylabel("Influent MFR (mg/s)")
+ax[1,0].set_xticks([])
+
+ax[1,1].plot(drain_mfr_tpC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[1,1].plot(drain_mfr_tp, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[1,1].plot(drain_mfr_tpA, '--', color='#3B4D7A', linewidth=2, label="passive")
+ax[1,1].set_ylabel("Released MRF (mg/s)")
+ax[1,1].set_xticks([])
+
+ax[1,2].plot(exfil_mfr_tpC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[1,2].plot(exfil_mfr_tp, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[1,2].plot(exfil_mfr_tpA, '--', color='#3B4D7A', linewidth=2, label="passive")
+ax[1,2].set_ylabel("Captured MRF (mg/s)")
 ax[1,2].set_xticks([])
 
-ax[2,2].plot(drain_loadC, color='#695580', linewidth=2, label='RTC')
-ax[2,2].plot(drain_load, '-.', color='#6CC6D1', linewidth=2, label='Standard')
-ax[2,2].plot(drain_loadA, '--', color='#3B4D7A', linewidth=2, label='Amended')
-ax[2,2].set_ylabel("Drain Load (g)")
-ax[2,2].set_xticks([])
+ax[2,0].plot(influent_cumloadC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[2,0].plot(influent_cumload, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[2,0].plot(influent_cumloadA, '--', color='#3B4D7A', linewidth=2, label="passive")
+ax[2,0].set_ylabel("Cum TP Recieved (g)")
+ax[2,0].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
+ax[2,0].set_xticklabels(["0","1","2","3","4","5","6","7"])
+ax[2,0].legend()
+ax[2,0].set_xlabel("Time (days)")
 
-ax[3,2].plot(exfil_loadC, color='#695580', linewidth=2, label='RTC')
-ax[3,2].plot(exfil_load, '-.', color='#6CC6D1', linewidth=2, label='Standard')
-ax[3,2].plot(exfil_loadA, '--', color='#3B4D7A', linewidth=2, label='Amended')
-ax[3,2].set_ylabel("Caputed Load (g)")
-ax[3,2].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
-ax[3,2].set_xticklabels(["0","1","2","3","4","5","6","7"])
-ax[3,2].set_xlabel("Time (days)")
-plt.show()
+ax[2,1].plot(released_cumloadC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[2,1].plot(released_cumload, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[2,1].plot(released_cumloadA, '--', color='#3B4D7A', linewidth=2, label="passive")
+ax[2,1].set_ylabel("Cum TP Released (g)")
+ax[2,1].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
+ax[2,1].set_xticklabels(["0","1","2","3","4","5","6","7"])
+ax[2,1].set_xlabel("Time (days)")
 
-# Plot Cumulative Load Result
-fig, ax = plt.subplots(1,3)
-ax[0].plot(influent_cumloadC, color='#695580', linewidth=2, label="RTC")
-ax[0].plot(influent_cumload, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[0].plot(influent_cumloadA, '--', color='#3B4D7A', linewidth=2, label="Amended")
-ax[0].set_ylabel("TP Cum Load Recieved (g)")
-ax[0].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
-ax[0].set_xticklabels(["0","1","2","3","4","5","6","7"])
-ax[0].set_xlabel("Time (days)")
-ax[0].legend()
-
-ax[1].plot(released_cumloadC, color='#695580', linewidth=2, label="RTC")
-ax[1].plot(released_cumload, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[1].plot(released_cumloadA, '--', color='#3B4D7A', linewidth=2, label="Amended")
-ax[1].set_ylabel("TP Cum Load Released(g)")
-ax[1].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
-ax[1].set_xticklabels(["0","1","2","3","4","5","6","7"])
-ax[1].set_xlabel("Time (days)")
-
-ax[2].plot(captured_cumloadC, color='#695580', linewidth=2, label="RTC")
-ax[2].plot(captured_cumload, '-.', color='#6CC6D1', linewidth=2, label="Standard")
-ax[2].plot(captured_cumloadA, '--', color='#3B4D7A', linewidth=2, label="Amended")
-ax[2].set_ylabel("TP Cum Load Captured(g)")
-ax[2].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
-ax[2].set_xticklabels(["0","1","2","3","4","5","6","7"])
-ax[2].set_xlabel("Time (days)")
+ax[2,2].plot(captured_cumloadC, color='#3DB77D', linewidth=2, label="autonomous")
+ax[2,2].plot(captured_cumload, '-.', color='#6CC6D1', linewidth=2, label="baseline")
+ax[2,2].plot(captured_cumloadA, '--', color='#3B4D7A', linewidth=2, label="passive")
+ax[2,2].set_ylabel("Cum TP Captured (g)")
+ax[2,2].set_xticks([0,1337,2674,4011,5348,6686,8023,9360])
+ax[2,2].set_xticklabels(["0","1","2","3","4","5","6","7"])
+ax[2,2].set_xlabel("Time (days)")
+plt.savefig('realweather.eps')
 plt.show()
